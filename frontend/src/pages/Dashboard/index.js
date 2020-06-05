@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo} from 'react';
 import api from '../../services/api';
 import moment from 'moment';
-import { Button, ButtonGroup, Alert } from 'reactstrap';
+import { Button, ButtonGroup, Alert, UncontrolledCollapse, CardBody, Card } from 'reactstrap';
 import './dashboard.css'
 import socketio from 'socket.io-client';
 //shows all post
@@ -9,13 +9,15 @@ export default function Dashboard({history}){
     const  [events, setEvents ] = useState([]);
     const user = localStorage.getItem('user');
     const user_id = localStorage.getItem('user_id');
-
+    //const  [event, setEvent ] = useState([]);//might be wrong
     const [rSelected, setRSelected] = useState(null);
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
     const [messageHandler, setMessageHandler] = useState('');
     const [eventRequest, setEventRequest] = useState([]);
-
+    //added for modal
+    //const [modal, setModal] = useState(false);
+ 
     useEffect(()=> {
         getEvents()
     },[])
@@ -58,7 +60,6 @@ export default function Dashboard({history}){
         }
 
     };
-
     
     const deleteEventHandler = async(eventId) => {
         
@@ -109,6 +110,13 @@ export default function Dashboard({history}){
             }, 2000)
         }
     }
+    //added for modal
+    /*
+    const toggle = (event) =>{
+        setEvent(event);
+         setModal(!modal);
+    }
+    */
     return(
         <>
             <ul className="notifications">
@@ -139,16 +147,25 @@ export default function Dashboard({history}){
             <ul className= "blog-list">
                 {events.map(event => (
                     <li key={event._id}>
-                        <header style={{backgroundImage: `url(${event.thumbnail_url})`}} >
+                        <header id="toggler" style={{backgroundImage: `url(${event.thumbnail_url})`}} >
                         {event.user === user_id ? <div><Button color="danger" size="sm"onClick={() => deleteEventHandler(event._id)}>Delete</Button></div>  : ""}
                         </header>
-                        <strong>{event.title}</strong>
+                        <strong id="toggler" >{event.title}</strong>
+                        <UncontrolledCollapse toggler="#toggler">
+                            <Card>
+                                <CardBody>
+                                    {event.content}
+                                </CardBody>
+                            </Card>
+                        </UncontrolledCollapse>
                         <span>{moment(event.date).format("MMM Do YYYY")}</span>
                         <span>#{event.category}</span>
                         <Button color="primary" onClick={() => commentRequestHandler(event)}>Liked this read? Let me know! 👍 </Button>
                     </li>
                 ))}
             </ul>
+
+        
             {error ? (
                 <Alert className="event-validation" color="danger"> {messageHandler} </Alert>
             ) : ""}
