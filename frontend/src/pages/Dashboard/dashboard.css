@@ -38,18 +38,14 @@ ul.blog-list header div {
 ul.notifications{
     list-style-type: none;
     margin-bottom: 16px;
-    display: flex;
-    flex-direction: row-reverse;
+
 }
 
 ul.notifications li {
     font-size: 16px;
     line-height: 24px;
 }
-div.readmodal Modal{
-    width: 800px;
 
-}
 @media (max-width:768px){
     ul.blog-list{
         grid-template-columns: 1fr;

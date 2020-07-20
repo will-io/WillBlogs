@@ -10,7 +10,6 @@ module.exports = {
 				const user_id = authData.user._id
 				const { eventId } = req.params
                 //const { date , commentary } = req.body;
-                
         
                 const comment = await Comment.create({
                     user: user_id,
@@ -25,7 +24,14 @@ module.exports = {
                     .execPopulate()
         
 				//console.log(registration.event.user)
-                    
+                comment.owner = comment.event.user;
+                comment.eventTitle = comment.event.title;
+                comment.eventDate = comment.event.date;
+                comment.userEmail = comment.user.email;
+                comment.save()
+
+                //console.log(comment)
+
                 const ownerSocket = req.connectUsers[comment.event.user]
 
                 if (ownerSocket) {
@@ -56,6 +62,23 @@ module.exports = {
             return res.status(400).json({message:"Comment Not Found"})
 
         }
-    }
+    },
+    getMyComments(req,res){
+        jwt.verify(req.token, 'secret', async (err, authData) => {
+            if(err){
+                res.sendStatus(401);
+            }else{
+            
+                try {
+                    const commentArr = await Comment.find({"owner": authData.user._id})
+                    if(commentArr){
+                        return res.json(commentArr)
+                    }
+                } catch (error) {
+                    console.log(error)   
+                }
 
+            }
+        })
+    }
 }

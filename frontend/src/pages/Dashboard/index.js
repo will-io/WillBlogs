@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo} from 'react';
 import api from '../../services/api';
 import moment from 'moment';
-import { Button, ButtonGroup, Alert, UncontrolledCollapse, CardBody, Card } from 'reactstrap';
+import { Button, Alert, UncontrolledCollapse, CardBody, Card, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, ButtonGroup  } from 'reactstrap';
 import './dashboard.css'
 import socketio from 'socket.io-client';
 //shows all post
@@ -14,7 +14,13 @@ export default function Dashboard({history}){
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
     const [messageHandler, setMessageHandler] = useState('');
-    const [eventRequest, setEventRequest] = useState([]);
+    const [eventsRequest, setEventsRequest] = useState([]);
+    const [ dropdownOpen, setDropDownOpen ] = useState(false);
+    const [eventRequestMessage, setEventRequestMessage] = useState('')
+    const [eventRequestSuccess, setEventRequestSuccess] = useState(false)
+    
+
+    const toggle = () => setDropDownOpen(!dropdownOpen)
     //added for modal
     //const [modal, setModal] = useState(false);
  
@@ -29,8 +35,8 @@ export default function Dashboard({history}){
     );
 
     useEffect(()=> {
-        socket.on('comment_request', data => setEventRequest([ ...eventRequest, data]));
-    },[eventRequest, socket])
+        socket.on('comment_request', data => setEventsRequest([ ...eventsRequest, data]));
+    },[eventsRequest, socket])
 
     const filterHandler = (query) => {
         setRSelected(query);
@@ -44,9 +50,7 @@ export default function Dashboard({history}){
             setEvents(response.data.events)
         } catch (error) {
             history.push('/login');
-
         }
-
     }
 
     const getEvents = async (filter) => { 
@@ -83,12 +87,6 @@ export default function Dashboard({history}){
         }
     };
 
-    const logoutHandler = () =>{
-        localStorage.removeItem('user',user)
-        localStorage.removeItem('user_id',user_id)
-        history.push('/login')
-    }
-
     const commentRequestHandler = async (event) =>{
         try {
             await api.post(`/comment/${event.id}`, /*perhaps commentary*/ {}, { headers: { user } })
@@ -110,54 +108,68 @@ export default function Dashboard({history}){
             }, 2000)
         }
     }
-    //added for modal
-    /*
-    const toggle = (event) =>{
-        setEvent(event);
-         setModal(!modal);
+
+   const acceptHandler = async (eventId) => {
+       try {
+           await api.post(`/comment/${eventId}/approvals`,{}, { headers: {user} })
+           setEventRequestSuccess(true)
+           setEventRequestMessage('feedback succesful')
+           removeNotificationFromDashboard(eventId)
+           setTimeout (() => {
+                setEventRequestSuccess(false)
+                setEventRequestMessage('')
+           },2000)
+       } catch (err) {
+        console.log(err)
+       }
+   }
+
+    const removeNotificationFromDashboard = (eventId) => {
+        const newEvents = eventsRequest.filter((event) => event._id !== eventId)
+        setEventsRequest(newEvents)
     }
-    */
+
     return(
         <>
             <ul className="notifications">
-                {eventRequest.map(request =>{
+                {eventsRequest.map(request =>{
                     return(
                         <li key={request._id}>
                             <div>
                                 <strong>{request.user.firstName} at {request.user.email}</strong> liked your post:
                                 <strong> {request.event.title}</strong>
                             </div>
+                            <ButtonGroup>
+                                <Button color="secondary" onClick={()=> acceptHandler(request._id)}>Sweet, Thank!</Button>
+                            </ButtonGroup>
                         </li>
                     )
                 })}
             </ul>
+            {eventRequestSuccess ? <Alert color="success"> {eventRequestMessage}</Alert> : ""}
             <div className="filter-panel" >
-            <ButtonGroup>
-                <Button color="primary" onClick={() => filterHandler(null)} active={rSelected === null}>All</Button>
-                <Button color="primary" onClick={myEventsHandler} active={rSelected === 'myevents'}>My Blogs</Button>
-                <Button color="primary" onClick={() => filterHandler("tech")} active={rSelected === 'tech'}>Tech</Button>
-                <Button color="primary" onClick={() => filterHandler("movies")} active={rSelected === 'movies'}>Movies</Button>
-                <Button color="primary" onClick={() => filterHandler("music")} active={rSelected === 'music'}>Music</Button>
-            </ButtonGroup>
-            <ButtonGroup>
-                <Button color="secondary" onClick={()=> history.push('events')}>Post New Blog</Button>
-                <Button color="danger" onClick={logoutHandler}>Logout</Button>
-            </ButtonGroup>
+                <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+                    <DropdownToggle color ="primary" caret>
+                        Filter By
+                    </DropdownToggle>
+                    <DropdownMenu>
+                        <DropdownItem onClick={() => filterHandler(null)} active={rSelected === null}> All Posts</DropdownItem>
+                        <DropdownItem onClick={myEventsHandler} active={rSelected === 'myevents'}> My Blogs </DropdownItem>
+                        <DropdownItem onClick={() => filterHandler("tech")} active={rSelected === 'tech'}> Tech </DropdownItem>
+                        <DropdownItem onClick={() => filterHandler("movies")} active={rSelected === 'movies'}> Movies </DropdownItem>
+                        <DropdownItem onClick={() => filterHandler("music")} active={rSelected === 'music'}> Music </DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
             </div>
             <ul className= "blog-list">
                 {events.map(event => (
                     <li key={event._id}>
-                        <header id="toggler" style={{backgroundImage: `url(${event.thumbnail_url})`}} >
+                        <header style={{backgroundImage: `url(${event.thumbnail_url})`}} >
                         {event.user === user_id ? <div><Button color="danger" size="sm"onClick={() => deleteEventHandler(event._id)}>Delete</Button></div>  : ""}
                         </header>
-                        <strong id="toggler" >{event.title}</strong>
-                        <UncontrolledCollapse toggler="#toggler">
-                            <Card>
-                                <CardBody>
-                                    {event.content}
-                                </CardBody>
-                            </Card>
-                        </UncontrolledCollapse>
+
+                        <strong  >{event.title}</strong>
+                        <span> {event.content}</span>
                         <span>{moment(event.date).format("MMM Do YYYY")}</span>
                         <span>#{event.category}</span>
                         <Button color="primary" onClick={() => commentRequestHandler(event)}>Liked this read? Let me know! 👍 </Button>

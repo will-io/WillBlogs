@@ -9,7 +9,7 @@ module.exports = {
 				res.statusCode(401)
 			} else {
 				const { title, content, category, date } = req.body
-				const { filename } = req.file
+				const { location } = req.file
 
 				const user = await User.findById(authData.user._id)
 
@@ -23,7 +23,7 @@ module.exports = {
 						content,
 						category,
 						user: authData.user._id,
-						thumbnail: filename,
+						thumbnail: location,
 						date
 					})
 
