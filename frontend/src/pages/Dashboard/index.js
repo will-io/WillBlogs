@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo} from 'react';
 import api from '../../services/api';
 import moment from 'moment';
-import { Button, Alert, UncontrolledCollapse, CardBody, Card, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, ButtonGroup  } from 'reactstrap';
+import { Button, Alert,  Dropdown, DropdownItem, DropdownMenu, DropdownToggle, ButtonGroup  } from 'reactstrap';
 import './dashboard.css'
 import socketio from 'socket.io-client';
 //shows all post
@@ -136,11 +136,11 @@ export default function Dashboard({history}){
                     return(
                         <li key={request._id}>
                             <div>
-                                <strong>{request.user.firstName} at {request.user.email}</strong> liked your post:
+                                <strong>{request.user.firstName} at {request.user.email}</strong> is requesting to attend your event!
                                 <strong> {request.event.title}</strong>
                             </div>
                             <ButtonGroup>
-                                <Button color="secondary" onClick={()=> acceptHandler(request._id)}>Sweet, Thank!</Button>
+                                <Button color="secondary" onClick={()=> acceptHandler(request._id)}>Sent him/her the details!</Button>
                             </ButtonGroup>
                         </li>
                     )
@@ -172,7 +172,7 @@ export default function Dashboard({history}){
                         <span> {event.content}</span>
                         <span>{moment(event.date).format("MMM Do YYYY")}</span>
                         <span>#{event.category}</span>
-                        <Button color="primary" onClick={() => commentRequestHandler(event)}>Liked this read? Let me know! 👍 </Button>
+                        <Button color="primary" onClick={() => commentRequestHandler(event)}>Want to attend? Press me to send request!👍</Button>
                     </li>
                 ))}
             </ul>

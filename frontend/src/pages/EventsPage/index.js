@@ -15,7 +15,7 @@ export default function EventsPage({ history }){
     const [success, setSuccess] = useState(false)
     const [dropdownOpen, setOpen] = useState(false);
     const user = localStorage.getItem('user');
-
+    
     useEffect(() => {
         if (!user) history.push('/login');
     }, [])
@@ -84,17 +84,17 @@ export default function EventsPage({ history }){
 
                 <FormGroup>
                     <Label>Title:</Label>
-                    <Input id="title" type="text" value={title} placeholder={'Blog Title'} onChange ={(evt) => setTitle(evt.target.value)}/>
+                    <Input id="title" type="text" value={title} placeholder={'Event Title'} onChange ={(evt) => setTitle(evt.target.value)}/>
                 </FormGroup>
 
                 <FormGroup>
                     <Label>Content:</Label>
-                    <Input id="content" type="textarea" value={content} placeholder={'Blog Content'} onChange ={(evt) => setContent(evt.target.value)}/>
+                    <Input id="content" type="textarea" value={content} placeholder={'Event Details'} onChange ={(evt) => setContent(evt.target.value)}/>
                 </FormGroup>
 
 
                 <FormGroup>
-                    <Label>Post date: </Label>
+                    <Label>Event date: </Label>
                     <Input id="date" type="date" value={date} placeholder={'post Date'} onChange={(evt) => setDate(evt.target.value)} />
                 </FormGroup>
 
@@ -112,7 +112,7 @@ export default function EventsPage({ history }){
 
                 <FormGroup style={{textAlign:'center'}}>
                 <Button className="submit-btn">
-                    Post Blog!
+                    Post Event!
                 </Button>
                 </FormGroup>
 

@@ -9,7 +9,7 @@ function App() {
   return (
     <ContextWrapper>
     <Container>
-    <Badge color="info"> <h1>Will Blogs </h1></Badge> 
+    <Badge color="info"> <h1>Will's Events </h1></Badge> 
       <div className="content" >
         <Routes/>
       </div>
