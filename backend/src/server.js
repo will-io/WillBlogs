@@ -59,3 +59,7 @@ app.use(routes);
 server.listen(PORT, ()=>{
     console.log(`Listening on ${PORT}`)
 })
+//for dcoker compose
+// router.use(function(req, res) {
+//     res.sendFile(path.join(__dirname, '../client','build','index.html'));
+// });
