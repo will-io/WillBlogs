@@ -3,15 +3,16 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./routes');
 const path = require('path');
-const http = require('http')
+const http = require('https')
 const socketio = require('socket.io')
 const PORT = process.env.PORT || 8000;
 //process environment or local host
 
 const app = express ();
 const server = http.Server(app)
-const io = socketio(server);
-
+//for docker
+//const io = socketio(server);
+const io = socketio();
 
 if(process.env.NODE_ENV != 'production'){
     require('dotenv').config()
