@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
+    "preinstall": "npm i nodemon -g",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js"
   },
@@ -20,6 +21,7 @@
     "mongoose": "^5.9.15",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "nodemon": "^2.0.2"
   }
 }

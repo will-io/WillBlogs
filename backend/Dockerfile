@@ -3,14 +3,14 @@ FROM  node:12
 
 # Create me an app directory
 # Create App Directory
-#RUN mkdir -p /usr/src/app
+RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Install Dependencies
 COPY package*.json ./
 
 RUN npm ci
-
+RUN npm install nodemon -g
 # Copy app source code
 COPY . .
 
@@ -18,4 +18,4 @@ COPY . .
 EXPOSE 8000
 
 # Runs  this coman upon init
-CMD [ "npm","start"] 
+CMD ["npm","start"] 

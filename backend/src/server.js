@@ -3,16 +3,15 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./routes');
 const path = require('path');
-const http = require('https')
-const socketio = require('socket.io')
+const http = require('http')
+const socketio = require('socket.io');
+const { Router } = require('express');
 const PORT = process.env.PORT || 8000;
 //process environment or local host
 
-const app = express ();
-const server = http.Server(app)
-//for docker
-//const io = socketio(server);
-const io = socketio();
+const app = express();
+const server = http.Server(app);
+const io = socketio(server);
 
 if(process.env.NODE_ENV != 'production'){
     require('dotenv').config()
@@ -24,6 +23,7 @@ try{
         useUnifiedTopology: true,
     })
     console.log('MongoDB connected!')
+    console.log(':)')
 }catch(error){
     console.log(error)
 }
@@ -53,14 +53,17 @@ app.use((req, res, next) => {
 })
 app.use(cors())
 app.use(express.json())
-app.use("/files", express.static(path.resolve(__dirname,"..","files")))
+app.use("/files", express.static(path.resolve(__dirname,"../frontend",'build',"index.html")))
 app.use(routes);
 
 
-server.listen(PORT, ()=>{
+// server.listen(PORT, ()=>{
+//     console.log(`Listening on ${PORT}`)
+// })
+server.listen(PORT,'0.0.0.0',()=>{
     console.log(`Listening on ${PORT}`)
 })
 //for dcoker compose
-// router.use(function(req, res) {
-//     res.sendFile(path.join(__dirname, '../client','build','index.html'));
+// Router.use(function(req, res) {
+//     res.sendFile(path.join(__dirname, '../frontend','build','index.html'));
 // });
