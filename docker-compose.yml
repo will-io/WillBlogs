@@ -5,7 +5,7 @@
         build:
           context: ./backend
           dockerfile: Dockerfile
-        image: myapp-backend
+        image: willylopezcontainers.azurecr.io/myapp-backend
         container_name: myapp-node-server
         command: /usr/src/app/node_modules/.bin/nodemon server.js
         volumes:
@@ -23,7 +23,7 @@
         build:
           context: ./frontend
           dockerfile: Dockerfile
-        image: myapp-frontend
+        image: willylopezcontainers.azurecr.io/myapp-frontend
         container_name: myapp-react-client
         command: npm start
         volumes:
