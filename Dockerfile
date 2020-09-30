@@ -1,4 +1,4 @@
-# Production Build
+# Production Ready Build
 
 # Stage 1: Build react frontend
 FROM node:12 as frontend
