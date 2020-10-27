@@ -40,9 +40,3 @@
   networks:
     app-network:
         driver: bridge
-
-  volumes:
-    data-volume:
-    node_modules:
-    web-root:
-      driver: local
