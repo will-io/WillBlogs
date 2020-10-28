@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken')
-
+//comment
 module.exports = {
     async createUser(req,res){
         try{
@@ -10,6 +10,7 @@ module.exports = {
             const existentUser = await User.findOne({email});
 
             if(!existentUser){
+				//console.log("ceating user")
                 const hashedPassword = await bcrypt.hash(password,10);
                 const userResponse = await User.create({
                         email,
