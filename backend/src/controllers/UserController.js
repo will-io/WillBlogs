@@ -10,6 +10,7 @@ module.exports = {
             const existentUser = await User.findOne({email});
 
             if(!existentUser){
+				//console.log("ceating user")
                 const hashedPassword = await bcrypt.hash(password,10);
                 const userResponse = await User.create({
                         email,

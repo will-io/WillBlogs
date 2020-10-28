@@ -19,7 +19,7 @@ RUN npm run build
 
 # Stage 2 : Build backend
 
-FROM node:12
+FROM node:12 
 
 WORKDIR /usr/src/app/
 COPY --from=frontend /usr/app/frontend/build/ ./frontend/build/
